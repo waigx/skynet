@@ -1,0 +1,23 @@
+Guys,
+
+I am sending you some more information about project 3. Please share it with the rest of your teams.
+
+You can find attached a figure of how LeakSentry (or whatever you want to name your extension) should look like, and what kind of functionality is expected of you.
+
+Upon installation, your extension should ask the user questions about himself/herself, such as:
+
+- First Name
+- Last Name
+- Year of Birth
+- Email address
+- Physical address
+- Telephone number
+
+You should normalize these (think of lowercase/uppercase, you want to be able to find all variations) and store them in your extension. You should only ask for these once, and never leak them to the outside world.
+
+Your extension should now essentially act like a proxy that is looking at all outgoing third-party requests in search for PII leaking. Third-party requests are requests that are going to web servers, other than the one the user is consciously interacting with (the one written in the URL bar of the browser). You can find a discussion about third-party cookies here: http://www.ravelrumba.com/blog/third-party-cookies/ which is applicable to what you want to do.
+
+Don't forget that your extension should support crowdsourcing, where a server "learns" from all users about their actions on individual sites and can propose that action to the next user going to that site. You can see this as the community recommendation in the figure that I am sending you.
+
+Best regards,
+Nick
