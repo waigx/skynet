@@ -13,6 +13,7 @@ class TopDomain(models.Model):
     def __str__(self):
         return self.domain_name
 
+
 class FullRequest(models.Model):
     page_url = models.URLField()
     is_leak = models.BooleanField(default=False)
