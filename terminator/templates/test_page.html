@@ -4,12 +4,23 @@
     <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
     <script>
         var json_query_obj = {
-            type: 'domain',
-            url: 'http://google.com'
+            url: 'https://abaidu.com',
+            isLeak: true,
+            isAccept: true,
+            leakTo: [
+                {
+                    url: 'https://cnbeta.com',
+                    type: 1
+                },
+                {
+                    url: 'http://youku.com',
+                    type: 2
+                }
+            ]
         }
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/api/get',
+            url: 'http://127.0.0.1:8000/api/put',
             type: 'POST',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(json_query_obj),

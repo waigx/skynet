@@ -19,7 +19,7 @@ class FullRequest(models.Model):
     is_leak = models.BooleanField(default=False)
     accept_count = models.PositiveIntegerField(default=0)
     reject_count = models.PositiveIntegerField(default=0)
-    top_domain = models.ForeignKey(TopDomain, default=None)
+    top_domain = models.ForeignKey(TopDomain, default=None, null=True)
 
     def __unicode__(self):
         return self.page_url
@@ -30,5 +30,5 @@ class FullRequest(models.Model):
 
 class LeakToURL(models.Model):
     leak_url = models.URLField()
-    leak_type = models.PositiveSmallIntegerField()
-    leak_from = models.ForeignKey(FullRequest)
+    leak_type = models.PositiveSmallIntegerField(default=0)
+    leak_from = models.ForeignKey(FullRequest, default=None, null=True)

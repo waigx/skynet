@@ -2,6 +2,7 @@ from django.shortcuts import render
 import json
 from django.http import HttpResponse
 from django.http import JsonResponse
+from utils.toTopDomain import to_top_domain
 from .models import *
 
 
@@ -10,7 +11,64 @@ def test_page(request):
 
 
 def put(request):
-    return render(request, 'error.html')
+    if request.method == 'POST':
+        json_obj = {'isSuccess': False}
+        put_request = json.loads(request.body)
+
+        # process json request
+        if ('url' not in put_request) or ('isLeak' not in put_request):
+            return JsonResponse(json_obj)
+        if (put_request['isLeak'] == True) \
+                and (('leakTo' not in put_request) or ('isAccept' not in put_request)):
+            return JsonResponse(json_obj)
+        raw_url = put_request['url']
+        is_leak = put_request['isLeak']
+        is_accept = True if 'isAccept' not in put_request else put_request['isAccept']
+        leak_to_sets = put_request['leakTo'] if is_leak else []
+        domain_url = to_top_domain(raw_url)
+
+        # process top domain table
+        try:
+            domain_entry = TopDomain.objects.get(domain_name=domain_url)
+        except TopDomain.DoesNotExist:
+            domain_entry = TopDomain.objects.create()
+            domain_entry.domain_name = domain_url
+            domain_entry.accept_count = 0
+            domain_entry.reject_count = 0
+            domain_entry.is_leak = False
+        domain_entry.accept_count += 1 if is_accept else 0
+        domain_entry.reject_count += 0 if is_accept else 1
+        domain_entry.is_leak = domain_entry.is_leak or is_leak
+        domain_entry.save()
+
+        # process full request url table
+        try:
+            page_entry = FullRequest.objects.get(page_url=raw_url)
+        except FullRequest.DoesNotExist:
+            page_entry = FullRequest.objects.create()
+            page_entry.page_url = raw_url
+            page_entry.is_leak = False
+            page_entry.accept_count = 0
+            page_entry.reject_count = 0
+            page_entry.top_domain = domain_entry
+        page_entry.accept_count += 1 if is_accept else 0
+        page_entry.reject_count += 0 if is_accept else 1
+        page_entry.is_leak = domain_entry.is_leak or is_leak
+        page_entry.save()
+
+        # process leak to url table
+        for leak_to_obj in leak_to_sets:
+            if ('url' not in leak_to_obj) or ('type' not in leak_to_obj):
+                return JsonResponse(json_obj)
+            leak_to_entry = LeakToURL.objects.create()
+            leak_to_entry.leak_url = leak_to_obj['url']
+            leak_to_entry.leak_type = leak_to_obj['type']
+            leak_to_entry.leak_from = page_entry
+            leak_to_entry.save()
+        json_obj['isSuccess'] = True
+        return JsonResponse(json_obj)
+
+    return render(request, 'error.html', status=404)
 
 
 def get(request):
