@@ -1,6 +1,5 @@
 from django.shortcuts import render
 import json
-from django.http import HttpResponse
 from django.http import JsonResponse
 from utils.toTopDomain import to_top_domain
 from .models import *

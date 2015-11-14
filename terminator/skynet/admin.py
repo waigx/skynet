@@ -31,9 +31,8 @@ class LeakedToURLAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Leak To', {'fields': ['leak_url']}),
         ('Leak Type', {'fields': ['leak_type']}),
-        ('Leak From', {'fields': ['leak_from_domain']}),
+        ('Leak From', {'fields': ['leak_from']}),
     ]
-
     def leak_from_domain(self, obj):
         return obj.leak_from.page_url
 
