@@ -1,0 +1,27 @@
+{% extends "html_base.html" %}
+{% block title %}Test Data{% endblock %}
+{% block body %}
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script>
+        var json_query_obj = {
+            type: 'domain',
+            url: 'google.com'
+        }
+
+        $.ajax({
+            url: 'http://127.0.0.1:8000/api/get',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(json_query_obj),
+            dataType: 'json',
+
+            success: function(result) {
+                console.log(result);
+            },
+            error: function(){
+
+            }
+});
+
+    </script>
+{% endblock %}

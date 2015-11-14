@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from skynet import views
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^put', include(admin.site.urls)),
+    url(r'^t800/', include(admin.site.urls)),
+    url(r'^test/', views.test_page),
+    url(r'^api/put', views.put),
+    url(r'^api/get', views.get),
 ]
