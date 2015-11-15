@@ -22,9 +22,9 @@
     console.log = function (message) {
         var result = document.getElementById('result');
         if (typeof message == 'object') {
-            result.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message);
+            result.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '\n';
         } else {
-            result.innerHTML += message;
+            result.innerHTML += message + '\n';
         }
     }
     function executeDemo() {

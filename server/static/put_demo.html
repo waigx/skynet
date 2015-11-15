@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Terminator Project Backend Demo - Get Data</title>
+</head>
+<body>
+<h1>Terminator Project Backend Demo - Put Data</h1>
+<p>The default getting data url is <strong>/api/put</strong>,
+    you should include <a href="https://jquery.com">jQuery</a> library for ajax.</p>
+<p>
+    Post json object must contains two fields:<strong>url</strong> and <strong>isLeak</strong>, if
+    <strong>isLeak</strong> field is true, this json must contains <strong>isAccepted</strong> and
+    <strong>leakTo</strong> fields.<br>
+    Every object in <strong>leakTo</strong> array must contains two area: <strong>url</strong> and
+    <strong>type</strong>.<br>
+    Fail to follow above rule will lead post failure. The post result will be return.
+</p>
+<p>Try the sample code blow.</p>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+    console.log = function (message) {
+        var result = document.getElementById('result');
+        if (typeof message == 'object') {
+            result.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '\n';
+        } else {
+            result.innerHTML += message + '\n';
+        }
+    }
+    function executeDemo() {
+        var el = document.getElementById('input');
+        el && eval(el.value);
+    }
+</script>
+<form>
+    <textarea id="input" rows="30" cols="100">
+        var json_query_obj = {
+            url: 'https://baidu.com',
+            isLeak: true,
+            isAccept: true,
+            leakTo: [
+                {
+                    url: 'https://cnbeta.com',
+                    type: 1
+                },
+                {
+                    url: 'http://youku.com',
+                    type: 2
+                }
+            ]
+        }
+
+        $.ajax({
+            url: 'http://terminator.dpkg.me/api/put',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(json_query_obj),
+            dataType: 'json',
+
+            success: function(result) {
+                console.log(result);
+            },
+            error: function(result){
+                console.log(result);
+            }
+    });
+   </textarea>
+    <br>
+    <input type = "button" value = "Send Request" onclick = "executeDemo()">
+    <br>
+    <p>Result:</p>
+    <textarea id="result" rows="5" cols="100"></textarea>
+</form>
+</body>
+</html>
