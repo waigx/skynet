@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Terminator Project Backend Demo</title>
+</head>
+<body>
+<h1>Terminator Project Backend Demo</h1>
+<ul>
+    <li><h2>Installation</h2>
+        <p>This project needs <a href="https://www.python.org">Python</a> and <a href="https://www.djangoproject.com">Django</a> installed. Then, following next steps to run the project on <strong>local</strong> machine.
+        </p>
+        <table border="1" cellpadding="3" cellspacing="0" width="50%">
+            <tr><td>$ python manage.py migrate</td></tr>
+        </table>
+        <br>
+        <table border="1" cellpadding="3" cellspacing="0" width="50%">
+            <tr><td>$ python manage.py makemigrations</td></tr>
+        </table>
+        <br>
+        <table border="1" cellpadding="3" cellspacing="0" width="50%">
+            <tr><td>$ python manage.py syncdb</td></tr>
+        </table>
+        <br>
+        <table border="1" cellpadding="3" cellspacing="0" width="50%">
+            <tr><td>$ python manage.py runserver 0.0.0.0:8000</td></tr>
+        </table>
+        <br>
+        <p>The last command allow Django listen 8000 port on all public IPs. Static files should be automatically severed by default. Check <a href="https://docs.djangoproject.com/en/1.8/howto/static-files/">here</a> for more details.</p>
+    </li>
+    <li><h2>APIs and Usage</h2>
+        <ul>
+            <li>
+                Performing a data query. See demo in <a href="./get_demo.html">this</a> page.
+            </li>
+            <li>
+                Performing a data post. see demo in <a href="./put_demo.html">this</a> page.
+            </li>
+        </ul>
+    </li>
+    <li><h2>Database</h2>
+        <p>Using SQLLite as the default solution, this backed maintains 3 tables. Details and layout was list blow.</p>
+        <ul>
+            <li> Layout
+    <pre>
+Top Domain Table             Full Request Table                Leak To URL
+
+ +-------------+          +-----------------------+        +-----------------+
+ | example.com | <----+---+ https://a.example.com | <--+---+ http://evil.us  |
+ +-------------+      ^   +-----------------------+    ^   +-----------------+
+ | demo.edu    | <-+--+---+ http://a.example.com/ |    +---+ a.com           |
+ +-------------+   |  |   +-----------------------+    |   +-----------------+
+                   +--+---+ demo.edu/page1/a.jsp  |    +---+ https://b.com   |
+                      |   +-----------------------+    |   +-----------------+
+                      +---+ http://demo.edu/      |    +---+ http://c.cn/a   |
+                      |   +-----------------------+        +-----------------+
+                      +---+ http://a.demo.edu/1/  |
+                          +-----------------------+
+
+    </pre>
+            </li>
+            <li> Entries
+               <p> - <strong>Top Domain Table:</strong><br>
+                   * domain_name(URL): top level domain name, <br>
+                   * is_leak(Boolean): this domain leaks or not<br>
+                   * accept_count(PositiveInteger): user accepted number, <br>
+                   * reject_count(PositiveInteger): user rejected number
+               </p>
+                <p> - <strong>Full request Table:</strong><br>
+                   * page_url(URL): full page URL, <br>
+                   * is_leak(Boolean): this URL leaks or not<br>
+                   * accept_count(PositiveInteger): user accepted number, <br>
+                   * reject_count(PositiveInteger): user rejected number, <br>
+                   * top_domain(ForeignKey): foreign key to top domain entry
+               </p>
+                <p> - <strong>Leak to URL Table:</strong><br>
+                   * leak_url(URL): leak destination URL, <br>
+                   * leak_type(PositiveSmallInteger): leakage type,<br>
+                   * leak_from(ForeignKey): foreign key to request entry
+               </p>
+            </li>
+        </ul>
+    </li>
+</ul>
+</body>
+</html>
