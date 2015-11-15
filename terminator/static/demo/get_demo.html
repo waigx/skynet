@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Terminator Project Backend Demo - Get Data</title>
+</head>
+<body>
+<h1>Terminator Project Backend Demo - Get Data</h1>
+<p>The default getting data url is <strong>/api/get</strong>,
+    you should include <a href="https://jquery.com">jQuery</a> library for ajax.</p>
+<p>
+    The json object must contains two field: <strong>type</strong> and <strong>url</strong>,
+    <strong>type</strong> string must be one of two types: 'domain' or 'page'.<br>
+    'domain' request returns json object contains 'pages' array, which include all pages(full requests) this domain leaks to.<br>
+    Similarly, 'page' request's result contains 'leakTo' array, which include all destination URL.
+
+</p>
+<p>Try the sample code blow.</p>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+    console.log = function (message) {
+        var result = document.getElementById('result');
+        if (typeof message == 'object') {
+            result.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message);
+        } else {
+            result.innerHTML += message;
+        }
+    }
+    function executeDemo() {
+        var el = document.getElementById('input');
+        el && eval(el.value);
+    }
+</script>
+<form>
+    <textarea id="input" rows="20" cols="100">
+       var json_query_obj = {
+            type: 'domain',
+            url: 'baidu.com'
+       };
+
+       $.ajax({
+           url: 'http://terminator.dpkg.me/api/get',
+           type: 'POST',
+           contentType: 'application/json; charset=utf-8',
+           data: JSON.stringify(json_query_obj),
+           dataType: 'json',
+           success: function(result) {
+               console.log(result);
+           },
+           error: function(result){
+               console.log(result);
+           }
+       });
+    </textarea>
+    <br>
+    <input type = "button" value = "Send Request" onclick = "executeDemo()">
+    <br>
+    <p>Result:</p>
+    <textarea id="result" rows="5" cols="100"></textarea>
+</form>
+
+
+</body>
+</html>
