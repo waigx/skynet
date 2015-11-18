@@ -76,7 +76,8 @@ def get(request):
         request_query = json.loads(request.body)
 
         if request_query['type'] == 'domain':
-            domain_url = request_query['url']
+            raw_url = request_query['url']
+            domain_url = to_top_domain(raw_url)
             json_obj['url'] = domain_url
             try:
                 domain_entry = TopDomain.objects.get(domain_name=domain_url)
