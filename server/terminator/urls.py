@@ -18,11 +18,11 @@ from django.contrib import admin
 from skynet import views
 
 urlpatterns = [
-    url(r'^demo/$', views.demo_page),
-    url(r'^demo/get', views.api_get_page),
-    url(r'^demo/put', views.api_put_page),
-    url(r'^t800/', include(admin.site.urls)),
     url(r'^test/', views.test_page),
-    url(r'^api/put', views.put),
-    url(r'^api/get', views.get),
+    url(r'^t800/$', include(admin.site.urls)),
+    url(r'^api/put$', views.put),
+    url(r'^api/get$', views.get),
+    url(r'^demo/$', views.demo_page),
+    url(r'^demo/get$', views.api_get_page),
+    url(r'^demo/put$', views.api_put_page),
 ]
