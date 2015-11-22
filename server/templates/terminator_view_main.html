@@ -9,6 +9,7 @@
         <thead>
             <tr>
                 <th>Domain Name</th>
+                <th>Logged Items</th>
                 <th>Accept Count</th>
                 <th>Reject Count</th>
                 <th>Accept Rate</th>
@@ -20,6 +21,9 @@
                 <tr>
                     <td>
                         <a href="/q/domain/{{ item.domain_name }}">{{ item.domain_name }}</a>
+                    </td>
+                    <td>
+                        {{ item.request_log }}
                     </td>
                     <td>
                         {{ item.accept_count }}

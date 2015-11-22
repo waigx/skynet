@@ -12,39 +12,64 @@ def test_page(request):
 def view_main(request):
     domain_set = TopDomain.objects.all()
     for item in domain_set:
-        item.accept_rate = str(item.accept_count/(item.accept_count+item.reject_count) * 100)+'%'
+        item.accept_rate = str(round(float(item.accept_count)/(item.accept_count+item.reject_count) * 100, 2))+'%'
+        try:
+            sub_page_set = FullRequest.objects.filter(top_domain=item)
+        except FullRequest.DoesNotExist:
+            sub_page_set = []
+        item.request_log = str(len(sub_page_set))
     return render(request, 'terminator_view_main.html', {'domain': domain_set})
 
 
 def view_domain(request):
     domain_url = request.path[10:]
-    print domain_url
+    leak_types = set()
     try:
         domain_entry = TopDomain.objects.get(domain_name=domain_url)
     except TopDomain.DoesNotExist:
         return render(request, 'error.html')
     sub_page_set = FullRequest.objects.filter(top_domain=domain_entry)
     for item in sub_page_set:
-        item.accept_rate = str(item.accept_count/(item.accept_count+item.reject_count) * 100)+'%'
+        temp_leak_types = set()
+        item.accept_rate = str(round(float(item.accept_count)/(item.accept_count+item.reject_count) * 100, 2))+'%'
+        try:
+            page_leak_to_set = LeakToURL.objects.filter(leak_from=item)
+        except FullRequest.DoesNotExist:
+            page_leak_to_set = []
+        item.leak_to_log = str(len(page_leak_to_set))
+        for leak_to_entry in page_leak_to_set:
+            temp_leak_types.add(leak_to_entry.leak_type)
+        leak_types.update(temp_leak_types)
+    leak_types_array = str(sorted(list(leak_types)))
     return render(request, 'terminator_view_domain.html', {'pages': sub_page_set,
+                                                           'leak_types': leak_types_array,
                                                            'top_domain': to_top_domain(domain_url)})
 
 
 def view_full_request(request):
     page_url = request.path[8:]
+    leak_types = set()
     top_domain = to_top_domain(page_url)
     try:
         page_entry = FullRequest.objects.get(page_url=page_url)
     except FullRequest.DoesNotExist:
         return render(request, 'error.html')
     page_leak_to_set = LeakToURL.objects.filter(leak_from=page_entry)
+    for leak_to_entry in page_leak_to_set:
+        leak_types.add(leak_to_entry.leak_type)
+    leak_types_array = str(sorted(list(leak_types)))
     return render(request, 'terminator_view_request.html', {'page_leak_to_set': page_leak_to_set,
                                                             'page_url': page_url,
+                                                            'leak_types': leak_types_array,
                                                             'top_domain': top_domain})
 
 
 def demo_page(request):
     return render(request, 'demo/index.html')
+
+
+def about_page(request):
+    return render(request, 'terminator_view_about.html')
 
 
 def api_get_page(request):
