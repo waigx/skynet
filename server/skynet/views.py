@@ -2,6 +2,7 @@ from django.shortcuts import render
 import json
 from django.http import JsonResponse
 from utils.toTopDomain import to_top_domain
+from utils.bit_to_type import bits_to_type
 from .models import *
 
 
@@ -23,14 +24,14 @@ def view_main(request):
 
 def view_domain(request):
     domain_url = request.path[10:]
-    leak_types = set()
+
+    leak_types = 0
     try:
         domain_entry = TopDomain.objects.get(domain_name=domain_url)
     except TopDomain.DoesNotExist:
         return render(request, 'error.html')
     sub_page_set = FullRequest.objects.filter(top_domain=domain_entry)
     for item in sub_page_set:
-        temp_leak_types = set()
         item.accept_rate = str(round(float(item.accept_count)/(item.accept_count+item.reject_count) * 100, 2))+'%'
         try:
             page_leak_to_set = LeakToURL.objects.filter(leak_from=item)
@@ -38,17 +39,15 @@ def view_domain(request):
             page_leak_to_set = []
         item.leak_to_log = str(len(page_leak_to_set))
         for leak_to_entry in page_leak_to_set:
-            temp_leak_types.add(leak_to_entry.leak_type)
-        leak_types.update(temp_leak_types)
-    leak_types_array = str(sorted(list(leak_types)))
+            leak_types |= leak_to_entry.leak_type
     return render(request, 'terminator_view_domain.html', {'pages': sub_page_set,
-                                                           'leak_types': leak_types_array,
+                                                           'leak_types': bits_to_type(leak_types),
                                                            'top_domain': to_top_domain(domain_url)})
 
 
 def view_full_request(request):
     page_url = request.path[8:]
-    leak_types = set()
+    leak_types = 0
     top_domain = to_top_domain(page_url)
     try:
         page_entry = FullRequest.objects.get(page_url=page_url)
@@ -56,11 +55,11 @@ def view_full_request(request):
         return render(request, 'error.html')
     page_leak_to_set = LeakToURL.objects.filter(leak_from=page_entry)
     for leak_to_entry in page_leak_to_set:
-        leak_types.add(leak_to_entry.leak_type)
-    leak_types_array = str(sorted(list(leak_types)))
+        leak_types |= leak_to_entry.leak_type
+        leak_to_entry.leak_type_str = bits_to_type(leak_to_entry.leak_type)
     return render(request, 'terminator_view_request.html', {'page_leak_to_set': page_leak_to_set,
                                                             'page_url': page_url,
-                                                            'leak_types': leak_types_array,
+                                                            'leak_types': bits_to_type(leak_types),
                                                             'top_domain': top_domain})
 
 
