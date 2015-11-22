@@ -32,14 +32,16 @@ def view_domain(request):
 
 def view_full_request(request):
     page_url = request.path[8:]
+    top_domain = to_top_domain(page_url)
     try:
         page_entry = FullRequest.objects.get(page_url=page_url)
     except FullRequest.DoesNotExist:
         return render(request, 'error.html')
     if page_entry.is_leak:
         page_leak_to_set = LeakToURL.objects.filter(leak_from=page_entry)
-    return render(request, 'terminator_view_request.html', {'pages': page_leak_to_set,
-                                                            'page_url': page_url})
+    return render(request, 'terminator_view_request.html', {'page_leak_to_set': page_leak_to_set,
+                                                            'page_url': page_url,
+                                                            'top_domain': top_domain})
 
 
 
