@@ -6,7 +6,19 @@ from .models import *
 
 
 def test_page(request):
-    return render(request, 'test_page.html')
+    return render(request, 'demo/index.html')
+
+
+def demo_page(request):
+    return render(request, 'demo/index.html')
+
+
+def api_get_page(request):
+    return render(request, 'demo/get.html')
+
+
+def api_put_page(request):
+    return render(request, 'demo/put.html')
 
 
 def put(request):
