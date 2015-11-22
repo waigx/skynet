@@ -9,6 +9,42 @@ def test_page(request):
     return render(request, 'demo/index.html')
 
 
+def view_main(request):
+    domain_set = TopDomain.objects.all()
+    for item in domain_set:
+        item.accept_rate = str(item.accept_count/(item.accept_count+item.reject_count) * 100)+'%'
+    return render(request, 'terminator_view_main.html', {'domain': domain_set})
+
+
+def view_domain(request):
+    domain_url = request.path[10:]
+    print domain_url
+    try:
+        domain_entry = TopDomain.objects.get(domain_name=domain_url)
+    except TopDomain.DoesNotExist:
+        return render(request, 'error.html')
+    sub_page_set = FullRequest.objects.filter(top_domain=domain_entry)
+    for item in sub_page_set:
+        item.accept_rate = str(item.accept_count/(item.accept_count+item.reject_count) * 100)+'%'
+    return render(request, 'terminator_view_domain.html', {'pages': sub_page_set,
+                                                           'top_domain': to_top_domain(domain_url)})
+
+
+def view_full_request(request):
+    page_url = request.path[8:]
+    try:
+        page_entry = FullRequest.objects.get(page_url=page_url)
+    except FullRequest.DoesNotExist:
+        return render(request, 'error.html')
+    if page_entry.is_leak:
+        page_leak_to_set = LeakToURL.objects.filter(leak_from=page_entry)
+    return render(request, 'terminator_view_request.html', {'pages': page_leak_to_set,
+                                                            'page_url': page_url})
+
+
+
+
+
 def demo_page(request):
     return render(request, 'demo/index.html')
 

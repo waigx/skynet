@@ -1,0 +1,41 @@
+{% extends "terminator_base_nav.html" %}
+{% block meta %} {% endblock %}
+{% block title %}The Skynet{% endblock %}
+{% block body-except-nav %}
+    <h2>All Top Domains:</h2>
+    <script type="text/javascript" src="/static/sorttable.js"></script>
+    <div style="padding-top: 20px">
+        <table id="domain-table" class="table table-striped table-hover sortable">
+        <thead>
+            <tr>
+                <th>Domain Name</th>
+                <th>Accept Count</th>
+                <th>Reject Count</th>
+                <th>Accept Rate</th>
+                <th>Leak Info</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in domain %}
+                <tr>
+                    <td>
+                        <a href="/q/domain/{{ item.domain_name }}">{{ item.domain_name }}</a>
+                    </td>
+                    <td>
+                        {{ item.accept_count }}
+                    </td>
+                    <td>
+                        {{ item.reject_count }}
+                    </td>
+                    <td>
+                        {{ item.accept_rate }}
+                    </td>
+                    <td>
+                        {{ item.is_leak }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+{% endblock %}
