@@ -37,14 +37,10 @@ def view_full_request(request):
         page_entry = FullRequest.objects.get(page_url=page_url)
     except FullRequest.DoesNotExist:
         return render(request, 'error.html')
-    if page_entry.is_leak:
-        page_leak_to_set = LeakToURL.objects.filter(leak_from=page_entry)
+    page_leak_to_set = LeakToURL.objects.filter(leak_from=page_entry)
     return render(request, 'terminator_view_request.html', {'page_leak_to_set': page_leak_to_set,
                                                             'page_url': page_url,
                                                             'top_domain': top_domain})
-
-
-
 
 
 def demo_page(request):
