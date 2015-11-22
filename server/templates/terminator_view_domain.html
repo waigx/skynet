@@ -1,0 +1,46 @@
+{% extends "terminator_base_nav.html" %}
+{% block meta %} {% endblock %}
+{% block title %}{{ top_domain }} Information{% endblock %}
+{% block body-except-nav %}
+    <h3>Domain <var>{{ top_domain }}</var> Requests <small>Leak types: {{ leak_types }}</small></h3>
+    <script type="text/javascript" src="/static/sorttable.js"></script>
+    <div style="padding-top: 20px">
+        <table id="domain-table" class="table table-striped table-hover sortable">
+        <thead>
+            <tr>
+                <th>URL</th>
+                <th>Logged Dest.</th>
+                <th>Accept</th>
+                <th>Reject</th>
+                <th>Accept Rate</th>
+                <th>Leak Info.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in pages %}
+                <tr>
+                    <td>
+                        <a href="/q/page/{{ item.page_url }}">{{ item.page_url }}</a>
+                    </td>
+                    <td>
+                        {{ item.leak_to_log }}
+                    </td>
+                    <td>
+                        {{ item.accept_count }}
+                    </td>
+                    <td>
+                        {{ item.reject_count }}
+                    </td>
+                    <td>
+                        {{ item.accept_rate }}
+                    </td>
+                     <td>
+                        {{ item.is_leak }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+        <h3><small>Back to main page: <a href="/"> Skynet </a></small></h3>
+    </div>
+{% endblock %}
